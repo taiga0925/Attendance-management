@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 class CreateUsersTable extends Migration
 {
@@ -22,6 +23,13 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        Schema::table('users', function (Blueprint $table) {
+            // roleカラムが既に存在しないことを確認してから追加
+            if (!Schema::hasColumn('users', 'role')) {
+                $table->string('role')->default(User::ROLE_GENERAL)->after('password'); // passwordカラムの後にroleを追加し、デフォルトを'general'に設定
+            }
+        });
     }
 
     /**
@@ -32,5 +40,9 @@ class CreateUsersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('users');
+        
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
     }
 }

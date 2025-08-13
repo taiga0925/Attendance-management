@@ -6,6 +6,8 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
 
 class RedirectIfAuthenticated
 {
@@ -23,7 +25,13 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                // ログインしているユーザーの役割をチェック
+                $user = Auth::guard($guard)->user();
+                if ($user->isAdmin()) {
+                    return redirect(RouteServiceProvider::ADMIN_HOME); // 管理者ホームへリダイレクト
+                } else {
+                    return redirect(RouteServiceProvider::HOME); // 一般ユーザーホームへリダイレクト
+                }
             }
         }
 

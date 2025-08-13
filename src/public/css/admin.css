@@ -1,0 +1,107 @@
+/* public/css/admin.css */
+
+/* Admin Header (layouts/admin.blade.php) */
+header.admin-header {
+    background-color: #000;
+}
+
+header.admin-header.app-logo {
+    color: #fff;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+header.admin-header nav ul li a {
+    color: #fff;
+}
+
+/* Admin Main Content */
+main.admin-main {
+    background-color: #f0f0f0;
+    min-height: calc(100vh - 50px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px;
+}
+
+.admin-container {
+    max-width: 1200px;
+    width: 100%;
+    background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    border-left: 5px solid #000;
+    padding-left: 15px;
+}
+
+.date-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.date-navigation.nav-link {
+    color: #000;
+    text-decoration: none;
+    padding: 5px 15px;
+}
+
+.date-navigation.current-date {
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+/* Attendance Table */
+.attendance-table-wrapper {
+    overflow-x: auto;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.attendance-table th,
+.attendance-table td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.attendance-table th {
+    background-color: #000;
+    color: #fff;
+    font-weight: normal;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.attendance-table td.no-data {
+    font-style: italic;
+    color: #999;
+}
+
+.detail-link {
+    color: #000;
+    text-decoration: none;
+    background-color: #eee;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.detail-link:hover {
+    background-color: #ddd;
+}

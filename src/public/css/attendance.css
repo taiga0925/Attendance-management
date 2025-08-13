@@ -1,0 +1,179 @@
+body {
+    background-color: #f0f0f0;
+}
+
+main.app-main {
+    background-color: #f0f0f0;
+    padding: 0;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 50px);
+}
+
+.attendance-container {
+    max-width: 600px;
+    padding: 50px 20px;
+    background-color: #f0f0f0;
+    border-radius: 0;
+    box-shadow: none;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-badge {
+    display: inline-block;
+    background-color: #ccc;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.date-display {
+    font-size: 24px;
+    font-weight: normal;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.current-time-display {
+    font-size: 48px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 40px;
+}
+
+.attendance-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.attendance-form {
+    flex: 1 1 45%;
+    max-width: 250px;
+}
+
+.attendance-button {
+    width: 100%;
+    padding: 25px 0;
+    border: none;
+    border-radius: 0;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* (出勤, 退勤) */
+.attendance-button.primary {
+    background-color: #000;
+    color: #fff;
+}
+
+.attendance-button.primary:hover {
+    background-color: #333;
+}
+
+/* (休憩入, 休憩戻) */
+.attendance-button.secondary {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.attendance-button.secondary:hover {
+    background-color: #eee;
+}
+
+.finish-message {
+    font-size: 24px;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* --- レスポンシブ対応 (attendance.css) --- */
+
+/* PC (1400-1540px) */
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .attendance-container {
+        padding: 60px 30px;
+    }
+
+    .user-greeting {
+        font-size: 32px;
+    }
+
+    .date-display {
+        font-size: 28px;
+    }
+
+    .current-time-display {
+        font-size: 56px;
+    }
+
+    .attendance-button {
+        font-size: 28px;
+        padding: 30px 0;
+    }
+
+    .finish-message {
+        font-size: 28px;
+    }
+}
+
+/* タブレット (768-850px) */
+@media (min-width: 768px) and (max-width: 850px) {
+    body {
+        background-color: #f0f0f0;
+    }
+
+    main.app-main {
+        min-height: calc(100vh - 40px);
+    }
+
+    .attendance-container {
+        max-width: 700px;
+        padding: 40px 20px;
+    }
+
+    .user-greeting {
+        font-size: 26px;
+    }
+
+    .date-display {
+        font-size: 22px;
+    }
+
+    .current-time-display {
+        font-size: 44px;
+    }
+
+    .attendance-buttons {
+        max-width: 480px;
+    }
+
+    .attendance-form {
+        max-width: 230px;
+    }
+
+    .attendance-button {
+        font-size: 22px;
+        padding: 20px 0;
+    }
+
+    .finish-message {
+        font-size: 22px;
+    }
+}
+
