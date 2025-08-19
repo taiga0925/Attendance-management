@@ -11,8 +11,8 @@ use Carbon\Carbon;
 class AttendanceController extends Controller
 {
     /**
-     * 勤怠打刻画面を表示
      * @return view ビュー
+     * 勤怠打刻画面を表示
      */
     public function index()
     {
@@ -45,7 +45,7 @@ class AttendanceController extends Controller
 
         $current_date_time = Carbon::now(); // 現在の日付と時刻を取得
 
-        return view('attendance.index', compact('status', 'message', 'error', 'current_date_time')); 
+        return view('attendance.index', compact('status', 'message', 'error', 'current_date_time'));
     }
 
     /**
@@ -72,8 +72,8 @@ class AttendanceController extends Controller
     }
 
     /**
-     * 休憩開始打刻処理
      * @return redirect リダイレクト
+     * 休憩開始打刻処理
      */
     public function startBreak(Request $request)
     {

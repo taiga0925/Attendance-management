@@ -19,6 +19,11 @@ use App\Http\Responses\LoginFailedResponse;
 use Laravel\Fortify\Contracts\FailedLoginResponse as FailedLoginResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
+use App\Actions\Fortify\CheckUserRoleForLogin;
+use Laravel\Fortify\Actions\AttemptToAuthenticate;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
@@ -64,7 +69,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->input('email') . $request->ip());
+            return Limit::perMinute(5)->by($request->input('email').$request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
@@ -87,30 +92,13 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.reset-password', ['request' => $request]);
         });
 
-        // 修正点: Fortify::authenticateUsing を使用して認証ロジックを厳密に制御
-        Fortify::authenticateUsing(function (Request $request) {
-            // ユーザーをメールアドレスで検索
-            $user = User::where('email', $request->email)->first();
-
-            // ユーザーが存在し、パスワードが正しいかを確認
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                // 認証情報が間違っている場合は、認証失敗
-                return null;
-            }
-
-            // ユーザーの役割とログイン画面のルートが一致するかを確認
-            if ($request->routeIs('admin.login')) {
-                // 管理者ログイン画面からのリクエストの場合、ユーザーが管理者であることを確認
-                return $user->isAdmin() ? $user : null;
-            }
-
-            if ($request->routeIs('login')) {
-                // 一般ユーザーログイン画面からのリクエストの場合、ユーザーが一般ユーザーであることを確認
-                return $user->isGeneral() ? $user : null;
-            }
-
-            // 上記のいずれの条件にも一致しない場合は認証失敗
-            return null;
+        // カスタム認証パイプラインを定義
+        Fortify::authenticateThrough(function (Request $request) {
+            return[
+                AttemptToAuthenticate::class, // 認証情報の検証
+                CheckUserRoleForLogin::class, // カスタムの役割チェック
+                PrepareAuthenticatedSession::class, // 認証後のセッション準備 
+            ];
         });
     }
 }

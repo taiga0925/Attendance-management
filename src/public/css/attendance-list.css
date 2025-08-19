@@ -1,0 +1,154 @@
+/* public/css/attendance-list.css */
+
+body {
+    background-color: #f0f0f0;
+}
+
+main.app-main {
+    background-color: #f0f0f0;
+    padding: 0;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 50px);
+}
+
+.attendance-list-container {
+    max-width: 1000px;
+    width: 100%;
+    background-color: #f0f0f0;
+    padding: 30px;
+    margin: 30px auto;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    border-left: 5px solid #000;
+    padding-left: 15px;
+}
+
+/* 月ナビゲーション */
+.month-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    width: 300px;
+    margin: 0 auto 30px auto;
+}
+
+.month-navigation a {
+    flex: 1;
+    color: #000;
+    text-decoration: none;
+    padding: 5px 15px;
+    font-weight: normal;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.month-navigation a:hover {
+    background-color: #f0f0f0;
+}
+
+.current-month-display {
+    flex: 1;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+    padding: 5px 15px;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.calendar-icon {
+    height: 18px;
+}
+
+/* 勤怠一覧テーブル */
+.attendance-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendance-table thead th {
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+.attendance-table thead th:last-child {
+    border-right: none;
+}
+
+.attendance-table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.attendance-table thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.attendance-table tbody tr td {
+    padding: 15px;
+    text-align: center;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.attendance-table tbody tr td:last-child {
+    border-right: none;
+}
+
+.attendance-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.attendance-table td.no-data {
+    font-style: italic;
+    color: #999;
+}
+
+.detail-link {
+    color: #000;
+    text-decoration: none;
+    background-color: #eee;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.detail-link:hover {
+    background-color: #ddd;
+}

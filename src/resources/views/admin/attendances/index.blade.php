@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', '勤怠一覧')
+
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 @endsection
@@ -12,9 +13,12 @@
         </h2>
 
         <div class="date-navigation">
-            <a href="{{ route('admin.attendances.index',) }}" class="nav-link">← 前日</a>
-            <span class="current-date">{{ $date->format('Y/m/d') }}</span>
-            <a href="{{ route('admin.attendances.index',) }}" class="nav-link">翌日 →</a>
+            <a href="{{ route('admin.attendances.index', ['date' => $date->copy()->subDay()->format('Y-m-d')]) }}">前日</a>
+                <span class="current-date-display">
+                    <img src="{{ asset('img/calendar.svg') }}" alt="Calendar Icon" class="calendar-icon">
+                        {{ $date->format('Y/m/d') }}
+                </span>
+            <a href="{{ route('admin.attendances.index', ['date' => $date->copy()->addDay()->format('Y-m-d')]) }}">翌日</a>
         </div>
 
         <div class="attendance-table-wrapper">
