@@ -1,4 +1,4 @@
-勤怠管理アプリケーション (Attendance Management Application)
+怠管理アプリケーション (Attendance Management Application)
 概要
 このアプリケーションは、企業向けの勤怠管理システムです。一般ユーザーは日々の勤怠打刻や修正申請を行い、管理者ユーザーは全スタッフの勤怠状況の確認、勤怠データの直接修正、月次勤怠のCSV出力、修正申請の承認などを行うことができます。
 
@@ -41,6 +41,8 @@
 Webサーバー: Nginx
 
 開発環境: Docker
+
+#使用技術(実行環境) PHP 8.4.4 Laravel Framework 8.83.8 mysql Ver 15.1 Distrib 10.3.39-MariaDB
 
 環境構築手順
 1. 前提条件
@@ -96,11 +98,11 @@ DB_PASSWORD=laravel_pass
 管理者 ログイン画面: http://localhost/admin/login
 
 テストユーザー / ダミーデータ
-php artisan db:seedコマンドを実行すると、ログインテスト用の以下のユーザーが作成されます 。   
+php artisan db:seedコマンドを実行すると、ログインテスト用の以下の管理者ユーザーが作成されます 。   
 
 役割	メールアドレス	パスワード
-一般ユーザー	user@example.com	password
-管理者	admin@example.com	password
+管理者	admin@test.com	admintest1
+管理者	master@test.com	admintest2
 
 Google スプレッドシートにエクスポート
 メールテスト環境 (MailHog)
@@ -108,3 +110,6 @@ Google スプレッドシートにエクスポート
 Dockerコンテナ起動後、以下のURLにアクセスすることで、開発環境から送信されたメール（新規登録時の認証メールなど）をすべて確認できます。
 
 MailHog 受信トレイ: http://localhost:8025
+
+データベース設計 (ER図)
+本アプリケーションのデータベース設計は、リポジトリに含まれるER.drawio.pngファイルをご参照ください。
