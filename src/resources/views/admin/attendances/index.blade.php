@@ -42,7 +42,7 @@
                             <td>{{ $attendance->totalBreakTime }}</td>
                             <td>{{ $attendance->totalWorkTime }}</td>
                             <td>
-                                <a href="#" class="detail-link">詳細</a>
+                               <a href="{{ route('admin.attendances.detail', ['attendance' => $attendance->id]) }}" class="detail-link">詳細</a>
                             </td>
                         </tr>
                     @empty

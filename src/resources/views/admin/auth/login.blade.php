@@ -5,7 +5,9 @@
 @section('content')
     <div class="auth-container">
         <h2>管理者ログイン</h2>
-        <form method="POST" action="{{ route('login') }}" class="auth-form">
+
+        {{-- ★★★ こちらが修正箇所です ★★★ --}}
+        <form method="POST" action="{{ route('admin.login.post') }}" class="auth-form">
             @csrf
 
             {{-- ログイン成功/失敗時のメッセージ表示 --}}
@@ -15,26 +17,23 @@
                 </div>
             @endif
 
-            @if (session('error'))
-                <div class="error-message">
-                    {{ session('error') }}
-                </div>
-            @endif
+            {{-- バリデーションエラーや認証エラーの表示 --}}
+            @error('email')
+                <div class="error-message">{{ $message }}</div>
+            @enderror
+            @error('password')
+                <div class="error-message">{{ $message }}</div>
+            @enderror
+
 
             <div class="form-group">
                 <label for="email">メールアドレス</label>
                 <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
-                @error('email')
-                    <span class="error-message">{{ $message }}</span>
-                @enderror
             </div>
 
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input id="password" type="password" name="password" required autocomplete="current-password">
-                @error('password')
-                    <span class="error-message">{{ $message }}</span>
-                @enderror
             </div>
 
             <div class="form-group">

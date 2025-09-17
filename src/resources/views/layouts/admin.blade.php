@@ -21,9 +21,9 @@
                     <li><a href="{{ route('admin.users.index') }}" class="header-link">スタッフ一覧</a></li>
                     <li><a href="{{ route('admin.requests.list') }}" class="header-link">申請一覧</a></li>
                     <li>
-                        <form action="{{ route('logout') }}" method="POST" class="logout-form">
+                        <form method="POST" action="{{ route('admin.logout') }}" style="display: inline;">
                             @csrf
-                            <button type="submit" class="logout-button">ログアウト</button>
+                                <button type="submit" class="logout-button">ログアウト</button>
                         </form>
                     </li>
                 </ul>

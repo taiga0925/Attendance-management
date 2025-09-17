@@ -10,11 +10,15 @@ services:
       - ./src:/var/www/
     depends_on:
       - php
+    networks: # ★★★ 追記 ★★★
+      - app-network
 
   php:
     build: ./docker/php
     volumes:
       - ./src:/var/www/
+    networks: # ★★★ 追記 ★★★
+      - app-network
 
   mysql:
     image: mysql:8.0.26
@@ -28,6 +32,8 @@ services:
     volumes:
       - ./docker/mysql/data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks: # ★★★ 追記 ★★★
+      - app-network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -40,3 +46,18 @@ services:
       - mysql
     ports:
       - 8080:80
+    networks: # ★★★ 追記 ★★★
+      - app-network
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+        - '1025:1025'
+        - '8025:8025'
+    networks: 
+        - app-network
+
+# 全てのサービスが接続するための共通ネットワーク 'app-network' を定義
+networks:
+  app-network:
+    driver: bridge

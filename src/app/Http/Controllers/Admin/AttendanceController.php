@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\UserBreak;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
+use App\Http\Requests\Admin\UpdateAttendanceRequest;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
@@ -57,5 +60,67 @@ class AttendanceController extends Controller
         }
 
         return view('admin.attendances.index', compact('attendances', 'date'));
+    }
+
+    /**
+     *
+     * @return view ビュー
+     * 勤怠詳細画面
+     *
+     */
+    public function show(Attendance $attendance)
+    {
+        // 関連するユーザー情報と休憩情報を一緒に読み込む
+        $attendance->load('user', 'userBreaks');
+
+        return view('admin.attendances.detail', compact('attendance'));
+    }
+
+    /**
+     *
+     * @return redirect リダイレクト
+     * 管理者による勤怠直接修正
+     *
+     */
+    public function update(UpdateAttendanceRequest $request, Attendance $attendance)
+    {
+        $validatedData = $request->validated();
+
+        DB::transaction(function () use ($attendance, $validatedData) {
+            $date = $attendance->date->format('Y-m-d');
+
+            // 出勤・退勤時刻を直接更新
+            $attendance->update([
+                'clock_in' => $date . ' ' . $validatedData['clock_in'],
+                'clock_out' => $date. ' '. $validatedData['clock_out']
+            ]);
+
+            // 既存の休憩時間を更新
+            if (isset($validatedData['breaks'])) {
+                foreach ($validatedData['breaks'] as $breakId => $times) {
+                    // 休憩開始・終了の両方が入力されている場合のみ更新
+                    if (!empty($times['break_start']) &&!empty($times['break_end'])) {
+                        UserBreak::find($breakId)->update([
+                            'break_start' => $date. ' '. $times['break_start'],
+                            'break_end'   => $date. ' '. $times['break_end']
+                        ]);
+                    }
+                }
+            }
+
+            // 新規休憩を追加
+            if (!empty($validatedData['new_breaks']['break_start']) &&!empty($validatedData['new_breaks']['break_end'])) {
+                $newBreakData = array(
+                    'break_start' => $date. ' '. $validatedData['new_breaks']['break_start'],
+                    'break_end'   => $date. ' '. $validatedData['new_breaks']['break_end']
+                );
+                $attendance->userBreaks()->create($newBreakData);
+            }
+
+        });
+
+        // 修正後は、元のスタッフの月次勤怠一覧画面に戻る
+        return redirect()->route('admin.users.attendances', ['user' => $attendance->user_id])
+                         ->with('status_message', '勤怠情報を更新しました。');
     }
 }

@@ -12,45 +12,46 @@ use App\Providers\RouteServiceProvider;
 class AdminLoginController extends Controller
 {
     /**
-     * 管理者ログインを処理する
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * 管理者ログインを処理
      */
     public function store(Request $request)
     {
-        // ログインフォームのバリデーション
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required']
         ]);
 
-        // ユーザーをメールアドレスで検索
-        $user = User::where('email', $credentials['email'])->first();
+        if (Auth::guard('admin')->attempt($credentials)) {
 
-        // ユーザーが存在し、パスワードが一致し、かつ管理者である場合のみ認証
-        if (Auth::attempt($credentials) && $user && $user->isAdmin()) {
-            $request->session()->regenerate();
-            return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
+            // 認証したユーザーが本当に管理者かを確認
+            $user = Auth::guard('admin')->user();
+            if ($user->isAdmin()) {
+                $request->session()->regenerate();
+                // ログイン後のリダイレクト先（例: /admin/dashboard）
+                return redirect()->intended(RouteServiceProvider::ADMIN_HOME);
+            }
+
+            // 管理者でなければログアウトさせる
+            Auth::guard('admin')->logout();
         }
 
         // 認証失敗
         throw ValidationException::withMessages([
-            'email' => __('ログイン情報が登録されていません。'),
+            'email' => __('ログイン情報が登録されていないか、管理者権限がありません。'),
         ]);
     }
 
     /**
-     * 管理者ログアウトを処理する
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * 管理者ログアウトを処理
      */
     public function destroy(Request $request)
     {
-        Auth::logout();
+
+        Auth::guard('admin')->logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('admin.login');
     }
 }

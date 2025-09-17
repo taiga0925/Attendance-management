@@ -3,29 +3,18 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
-use App\Http\Responses\LoginSuccessfulResponse;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
-use Laravel\Fortify\Fortify;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Fortify\Contracts\LogoutResponse;
-use Illuminate\Support\Facades\URL;
-use App\Http\Requests\LoginRequest;
-use App\Http\Responses\LoginFailedResponse;
-use Laravel\Fortify\Contracts\FailedLoginResponse as FailedLoginResponseContract;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
-use App\Actions\Fortify\CheckUserRoleForLogin;
-use Laravel\Fortify\Actions\AttemptToAuthenticate;
-use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
-use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
-use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
-use Illuminate\Support\Facades\Hash;
+use Laravel\Fortify\Fortify;
+
+// ★★★ 以下の3つのuse宣言を追加してください ★★★
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -34,28 +23,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Fortifyのログアウト後のリダイレクトをカスタマイズ
-        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
-            public function toResponse($request)
-            {
-                $previousUrl = URL::previous();
-
-                if (str_starts_with($previousUrl, url('/admin'))) {
-                    return redirect(route('admin.login'));
-                }
-
-                return redirect(route('login'));
-            }
-        });
-
-        // Fortifyの認証失敗レスポンスをカスタムクラスでオーバーライド
-        $this->app->singleton(FailedLoginResponseContract::class, LoginFailedResponse::class);
-
-        // FortifyにカスタムLoginRequestを使用するように指示
-        $this->app->singleton(FortifyLoginRequest::class, LoginRequest::class);
-
-        // 認証成功レスポンスをカスタムクラスでオーバーライド
-        $this->app->singleton(LoginResponseContract::class, LoginSuccessfulResponse::class);
+        //
     }
 
     /**
@@ -64,41 +32,45 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
-        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
-        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
-        RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->input('email').$request->ip());
+
+        // 一般ユーザー用のログイン認証ロジックをカスタマイズ
+        Fortify::authenticateUsing(function (Request $request) {
+            // メールアドレスでユーザーを検索
+            $user = User::where('email', $request->email)->first();
+
+            // ユーザーが存在し、パスワードが正しく、かつ「一般ユーザー」であるかを確認
+            if (
+                $user &&
+                Hash::check($request->password, $user->password) &&
+                $user->isGeneral()
+            ) { // Userモデルに以前作成したisGeneral()メソッドを利用
+                return $user;
+            }
+
+            // 条件に合わない場合は認証を失敗させる
+            return null;
         });
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
+
+        // 以下はFortifyのデフォルト設定
+        Fortify::registerView(function () {
+            return view('auth.register');
         });
 
         Fortify::loginView(function () {
             return view('auth.login');
         });
 
-        Fortify::registerView(function () {
-            return view('auth.register');
+        // メール認証案内ページのビューを指定
+        Fortify::verifyEmailView(function () {
+            return view('auth.verify-email');
         });
 
-        Fortify::requestPasswordResetLinkView(function () {
-            return view('auth.forgot-password');
-        });
+        RateLimiter::for('login', function (Request $request) {
+            $email = (string) $request->email;
 
-        Fortify::resetPasswordView(function (Request $request) {
-            return view('auth.reset-password', ['request' => $request]);
-        });
-
-        // カスタム認証パイプラインを定義
-        Fortify::authenticateThrough(function (Request $request) {
-            return[
-                AttemptToAuthenticate::class, // 認証情報の検証
-                CheckUserRoleForLogin::class, // カスタムの役割チェック
-                PrepareAuthenticatedSession::class, // 認証後のセッション準備 
-            ];
+            return Limit::perMinute(10)->by($email . $request->ip());
         });
     }
 }
