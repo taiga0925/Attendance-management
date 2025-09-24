@@ -78,6 +78,17 @@ docker-compose exec php php artisan key:generate
 docker-compose exec php php artisan migrate
 
 # 8. テスト用のダミーデータを作成します
+管理者ユーザー
+役割	メールアドレス	パスワード
+管理者	admin@test.com	admintest1
+管理者	master@test.com	admintest2
+
+一般ユーザー
+5名の一般ユーザーが作成されます。名前とメールアドレスはランダムに生成されますが、パスワードは全員共通です。
+
+役割	パスワード
+一般ユーザー	password
+
 docker-compose exec php php artisan db:seed
 3. .envファイルの設定について
 上記の手順でsrc/.envファイルが作成されますが、データベース接続情報がご自身のdocker-compose.ymlの設定と一致しているかご確認ください。今回開発した環境では、以下の設定値が使用されています。
