@@ -79,14 +79,19 @@ docker-compose exec php php artisan migrate
 
 # 8. テスト用のダミーデータを作成します
 管理者ユーザー
+
 役割	メールアドレス	パスワード
+
 管理者	admin@test.com	admintest1
+
 管理者	master@test.com	admintest2
 
 一般ユーザー
+
 5名の一般ユーザーが作成されます。名前とメールアドレスはランダムに生成されますが、パスワードは全員共通です。
 
 役割	パスワード
+
 一般ユーザー	password
 
 docker-compose exec php php artisan db:seed
