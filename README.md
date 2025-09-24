@@ -113,14 +113,6 @@ DB_PASSWORD=laravel_pass
 
 管理者 ログイン画面: http://localhost/admin/login
 
-テストユーザー / ダミーデータ
-php artisan db:seedコマンドを実行すると、ログインテスト用の以下の管理者ユーザーが作成されます 。   
-
-役割	メールアドレス	パスワード
-管理者	admin@test.com	admintest1
-管理者	master@test.com	admintest2
-
-Google スプレッドシートにエクスポート
 メールテスト環境 (MailHog)
 本アプリケーションは、メール認証機能のテストのためにMailHogを使用しています。
 Dockerコンテナ起動後、以下のURLにアクセスすることで、開発環境から送信されたメール（新規登録時の認証メールなど）をすべて確認できます。
