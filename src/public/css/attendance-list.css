@@ -96,7 +96,6 @@ body {
 
 /* --- レスポンシブ対応 --- */
 
-/* タブレット表示 (幅が850px以下の場合に適用) */
 @media (max-width: 850px) {
     .attendance-list-container {
         padding: 10px;

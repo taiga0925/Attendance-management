@@ -4,7 +4,6 @@ namespace App\Http\Responses;
 
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 
 class LoginSuccessfulResponse implements LoginResponseContract

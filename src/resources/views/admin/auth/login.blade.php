@@ -6,7 +6,6 @@
     <div class="auth-container">
         <h2>管理者ログイン</h2>
 
-        {{-- ★★★ こちらが修正箇所です ★★★ --}}
         <form method="POST" action="{{ route('admin.login.post') }}" class="auth-form">
             @csrf
 

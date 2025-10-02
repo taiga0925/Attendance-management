@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Attendance;
 use App\Models\StampCorrectionRequest;
+use Carbon\Carbon;
 
 class AttendanceDetailController extends Controller
 {
@@ -50,15 +51,42 @@ class AttendanceDetailController extends Controller
             return redirect()->back()->with('error', '既に承認待ちの申請があるため、新たな申請はできません。');
         }
 
-        // --- ここからバリデーションとデータ保存処理 ---
-        $validatedData = $request->validate([
+        // 休憩時間が勤務時間内であるかをチェックするカスタムルールを定義します
+        $breakTimeRule = function ($attribute, $value, $fail) use ($request) {
+            $clockIn = $request->input('clock_in');
+            $clockOut = $request->input('clock_out');
+
+            // 必要な時刻が入力されていない場合は、このチェックは行いません
+            if (!$clockIn || !$clockOut || !$value) {
+                return;
+            }
+
+            $breakTime = Carbon::parse($value);
+            $workStartTime = Carbon::parse($clockIn);
+            $workEndTime = Carbon::parse($clockOut);
+
+            // 休憩時間が勤務時間の範囲外であればエラーを返します
+            if (!$breakTime->between($workStartTime, $workEndTime, true)) {
+                $fail('休憩時間が勤務時間外です。');
+            }
+        };
+
+        // バリデーションを実行します
+        $validatedData = $request->validate(array(
             'clock_in' => 'required|date_format:H:i',
             'clock_out' => 'required|date_format:H:i|after:clock_in',
-            'breaks.*.break_start' => 'nullable|date_format:H:i',
-            'breaks.*.break_end' => 'nullable|date_format:H:i|after:breaks.*.break_start',
-            'new_breaks.break_start' => 'nullable|date_format:H:i',
-            'new_breaks.break_end' => 'nullable|date_format:H:i|after:new_breaks.break_start',
+
+            // 休憩時間のルールを配列に変更し、カスタムルールを適用します
+            'breaks.*.break_start' => array('nullable', 'date_format:H:i', $breakTimeRule),
+            'breaks.*.break_end' => array('nullable', 'date_format:H:i', 'after:breaks.*.break_start', $breakTimeRule),
+            'new_breaks.break_start' => array('nullable', 'date_format:H:i', $breakTimeRule),
+            'new_breaks.break_end' => array('nullable', 'date_format:H:i', 'after:new_breaks.break_start', $breakTimeRule),
+
             'remarks' => 'required|string|max:500',
+        ), [
+            // カスタムエラーメッセージ
+            'clock_out.after' => '出勤時間もしくは退勤時間が不適切な値です。',
+            'remarks.required' => '備考を記入してください。',
         ]);
 
         // データベースへの書き込み
@@ -106,5 +134,25 @@ class AttendanceDetailController extends Controller
         });
 
         return redirect()->route('attendance.list')->with('status_message', '勤怠修正を申請しました。');
+    }
+
+    /**
+     * 休憩時間が勤務時間内であるかをチェックするカスタムルール
+     */
+    private function breakTimeRule(Request $request)
+    {
+        return function ($attribute, $value, $fail) use ($request) {
+            $clockIn = $request->input('clock_in');
+            $clockOut = $request->input('clock_out');
+            if (!$clockIn || !$clockOut || !$value) {
+                return;
+            }
+            $breakTime = Carbon::parse($value);
+            $workStartTime = Carbon::parse($clockIn);
+            $workEndTime = Carbon::parse($clockOut);
+            if (!$breakTime->between($workStartTime, $workEndTime, true)) {
+                $fail('休憩時間が勤務時間外です。');
+            }
+        };
     }
 }

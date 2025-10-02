@@ -1,9 +1,8 @@
-@extends('layouts.admin') {{-- 管理者用の共通レイアウトを継承 --}}
+@extends('layouts.admin') 
 
 @section('title', '修正申請承認')
 
 @section('css')
-    {{-- 管理者用の勤怠詳細画面とレイアウトが似ているので、同じCSSを再利用します --}}
     <link rel="stylesheet" href="{{ asset('css/attendance-detail.css') }}">
 @endsection
 
@@ -64,7 +63,6 @@
         </div>
 
         <div class="form-actions">
-            {{-- ★★★ 申請ステータスに応じてボタンの表示を切り替えます ★★★ --}}
             @if ($request->status == 'pending')
                 {{-- 承認ボタンのフォーム --}}
                 <form action="{{ route('admin.requests.approve', ['request' => $request->id]) }}" method="POST">

@@ -49,6 +49,7 @@ services:
     networks: # ★★★ 追記 ★★★
       - app-network
 
+# ★★★ 追記 ★★★
   mailhog:
     image: 'mailhog/mailhog:latest'
     ports:

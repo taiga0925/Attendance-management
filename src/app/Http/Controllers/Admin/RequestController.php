@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\StampCorrectionRequest;
-use App\Models\Attendance;
-use App\Models\UserBreak;
 use Illuminate\Support\Facades\DB;
 
 class RequestController extends Controller
@@ -40,10 +38,8 @@ class RequestController extends Controller
 
 
     /**
+     *@return view ビュー
      * 修正申請の詳細を表示
-     *
-     * @param StampCorrectionRequest $request
-     * @return \Illuminate\View\View
      */
     public function show(StampCorrectionRequest $request)
     {
@@ -57,10 +53,8 @@ class RequestController extends Controller
     }
 
     /**
+     *@return redirect リダイレクト
      * 修正申請を承認
-     *
-     * @param StampCorrectionRequest $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function approve(StampCorrectionRequest $request)
     {

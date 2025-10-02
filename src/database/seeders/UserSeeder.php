@@ -2,35 +2,39 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        $param = [
+        // 管理者ユーザーの作成
+        User::create([
             'name' => 'admin',
             'email' => 'admin@test.com',
             'email_verified_at' => now(),
             'password' => Hash::make('admintest1'),
             'role' => 'admin',
-        ];
-        DB::table('users')->insert($param);
-
-        $param = [
+        ]);
+        User::create([
             'name' => 'master',
             'email' => 'master@test.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('admintest2'), 
+            'password' => Hash::make('admintest2'),
             'role' => 'admin',
-        ];
-        DB::table('users')->insert($param);
+        ]);
+
+        // 5名の一般ユーザーを、固定のパスワードで作成します
+        User::factory()->count(5)->create([
+            'role' => 'general',
+            'password' => Hash::make('password'), // 全員のパスワードを 'password' に設定
+        ]);
     }
 }

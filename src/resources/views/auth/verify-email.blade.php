@@ -1,9 +1,9 @@
-@extends('layouts.guest') {{-- ログイン前の共通レイアウトを継承 --}}
+@extends('layouts.guest')
 
 @section('title', 'メールアドレス認証')
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/auth.css') }}"> {{-- 既存の認証画面CSSを再利用 --}}
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 @endsection
 
 @section('content')

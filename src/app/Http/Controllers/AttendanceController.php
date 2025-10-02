@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use Carbon\Carbon;
@@ -48,9 +47,9 @@ class AttendanceController extends Controller
     public function clockIn()
     {
         if (Auth::user()->clockIn()) {
-            return redirect()->back()->with('status_message', '出勤しました');
+            return redirect()->route('attendance.index')->with('status_message', '出勤しました');
         }
-        return redirect()->back()->with('error', '本日は既に出勤済みです。');
+        return redirect()->route('attendance.index')->with('error', '本日は既に出勤済みです。');
     }
 
     /**
@@ -61,9 +60,9 @@ class AttendanceController extends Controller
     {
         [$success, $message] = Auth::user()->clockOut();
         if ($success) {
-            return redirect()->back()->with('status_message', $message);
+            return redirect()->route('attendance.index')->with('status_message', $message);
         }
-        return redirect()->back()->with('error', $message);
+        return redirect()->route('attendance.index')->with('error', $message);
     }
 
     /**
@@ -74,9 +73,9 @@ class AttendanceController extends Controller
     {
         [$success, $message] = Auth::user()->startBreak();
         if ($success) {
-            return redirect()->back()->with('status_message', $message);
+            return redirect()->route('attendance.index')->with('status_message', $message);
         }
-        return redirect()->back()->with('error', $message);
+        return redirect()->route('attendance.index')->with('error', $message);
     }
 
     /**
@@ -87,8 +86,8 @@ class AttendanceController extends Controller
     {
         [$success, $message] = Auth::user()->endBreak();
         if ($success) {
-            return redirect()->back()->with('status_message', $message);
+            return redirect()->route('attendance.index')->with('status_message', $message);
         }
-        return redirect()->back()->with('error', $message);
+        return redirect()->route('attendance.index')->with('error', $message);
     }
 }

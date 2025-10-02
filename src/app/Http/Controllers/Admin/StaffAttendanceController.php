@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Attendance;
 use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StaffAttendanceController extends Controller
 {

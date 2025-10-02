@@ -120,7 +120,6 @@ body {
 /* 承認済みボタンのスタイル */
 .submit-button.approved {
     background-color: #6c757d;
-    /* グレーアウト */
     cursor: not-allowed;
 }
 

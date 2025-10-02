@@ -102,7 +102,7 @@ main.app-main {
     margin-bottom: 10px;
 }
 
-/* --- レスポンシブ対応 (attendance.css) --- */
+/* --- レスポンシブ対応 --- */
 
 /* PC (1400-1540px) */
 @media (min-width: 1400px) and (max-width: 1540px) {
